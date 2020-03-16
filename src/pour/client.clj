@@ -28,10 +28,10 @@
 (defn new-client
   ([opts]
    {bt-client (build-client (Bt/client) opts)
-    callback-set (atom #{})})
+    callback-set (atom (into #{} (get opts ::callbacks)))})
   ([runtime opts]
    {bt-client (build-client (Bt/client runtime) opts)
-    callback-set (atom #{})}))
+    callback-set (atom (into #{} (get opts ::callbacks)))}))
 
 (defn start!
   [client]
