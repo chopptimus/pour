@@ -15,7 +15,7 @@
    ::pieces-total (.getPiecesTotal session-state)})
 
 (defn- build-client
-  [builder {:keys [magnet dir]}]
+  [builder {::keys [magnet dir]}]
   (let [path (java.nio.file.Paths/get (java.net.URI. (str "file://" dir)))]
     (.. builder
         (storage (FileSystemStorage. path))
@@ -69,8 +69,8 @@
 (comment
 
   (do
-    (def opts {:dir "/home/hy/projects/pour/data"
-               :magnet "magnet:?xt=urn:btih:cf3b8d5ecdd4284eb9b3a80fcfe9b1d621548f72&tr=http%3A%2F%2Facademictorrents.com%2Fannounce.php&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969"})
+    (def opts {::dir "/home/hy/projects/pour/data"
+               ::magnet "magnet:?xt=urn:btih:cf3b8d5ecdd4284eb9b3a80fcfe9b1d621548f72&tr=http%3A%2F%2Facademictorrents.com%2Fannounce.php&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969"})
     
     (def client (new-client opts))
     
