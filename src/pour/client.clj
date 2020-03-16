@@ -22,16 +22,16 @@
         (magnet magnet)
         build)))
 
+(def ^:private bt-client :bt/BtClient)
+(def ^:private callback-set ::callback-set)
+
 (defn new-client
   ([opts]
-   {::BtClient (build-client (Bt/client) opts)
-    ::callback-set (atom #{})})
+   {bt-client (build-client (Bt/client) opts)
+    callback-set (atom #{})})
   ([runtime opts]
-   {::BtClient (build-client (Bt/client runtime) opts)
-    ::callback-set (atom #{})}))
-
-(def ^:private bt-client ::BtClient)
-(def ^:private callback-set ::callback-set)
+   {bt-client (build-client (Bt/client runtime) opts)
+    callback-set (atom #{})}))
 
 (defn start!
   [client]
