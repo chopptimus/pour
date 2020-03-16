@@ -22,7 +22,7 @@
         (magnet magnet)
         build)))
 
-(defn client
+(defn new-client
   ([opts]
    {::BtClient (build-client (Bt/client) opts)
     ::callback-set (atom #{})})
@@ -72,14 +72,14 @@
     (def opts {:dir "/home/hy/projects/pour/data"
                :magnet "magnet:?xt=urn:btih:cf3b8d5ecdd4284eb9b3a80fcfe9b1d621548f72&tr=http%3A%2F%2Facademictorrents.com%2Fannounce.php&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969"})
     
-    (def klient (client opts))
+    (def client (new-client opts))
     
     (def cb (fn [state-map] (clojure.pprint/pprint state-map))))
 
-  (add-callback! klient cb)
+  (add-callback! client cb)
 
-  (start! klient)
+  (start! client)
 
-  (stop! klient)
+  (stop! client)
   
   )
