@@ -35,7 +35,7 @@
 
 (defn start!
   [client]
-  (assoc client :completable-future
+  (assoc client ::completable-future
          (.startAsync
           (bt-client client)
           (reify java.util.function.Consumer
