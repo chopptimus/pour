@@ -22,8 +22,8 @@
         (magnet magnet)
         build)))
 
-(def ^:private bt-client :bt/BtClient)
-(def ^:private callback-set ::callback-set)
+(def ^:private bt-client :BtClient)
+(def ^:private callback-set :callback-set)
 
 (defn new-client
   ([opts]
@@ -35,7 +35,7 @@
 
 (defn start!
   [client]
-  (assoc client ::completable-future
+  (assoc client :completable-future
          (.startAsync
           (bt-client client)
           (reify java.util.function.Consumer
@@ -70,13 +70,11 @@
 
   (do
     (def opts {::dir "/home/hy/projects/pour/data"
-               ::magnet "magnet:?xt=urn:btih:cf3b8d5ecdd4284eb9b3a80fcfe9b1d621548f72&tr=http%3A%2F%2Facademictorrents.com%2Fannounce.php&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969"})
+               ::magnet "magnet:?xt=urn:btih:cf3b8d5ecdd4284eb9b3a80fcfe9b1d621548f72&tr=http%3A%2F%2Facademictorrents.com%2Fannounce.php&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969"
+               ::callbacks (fn [state]
+                             (clojure.pprint/pprint state))})
     
-    (def client (new-client opts))
-    
-    (def cb (fn [state-map] (clojure.pprint/pprint state-map))))
-
-  (add-callback! client cb)
+    (def client (new-client opts)))
 
   (start! client)
 
