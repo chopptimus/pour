@@ -3,7 +3,8 @@
  :deps
  {com.github.atomashpolskiy/bt-core {:mvn/version "1.9"}
   com.github.atomashpolskiy/bt-dht {:mvn/version "1.9"}
-  com.github.atomashpolskiy/bt-http-tracker-client {:mvn/version "1.9"}}
+  com.github.atomashpolskiy/bt-http-tracker-client {:mvn/version "1.9"}
+  nrepl/bencode {:mvn/version "1.0.0"}}
 
  :aliases
  {:dev {:extra-deps {cider/cider-nrepl {:mvn/version "0.24.0"}}}}}
