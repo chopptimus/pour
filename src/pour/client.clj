@@ -1,4 +1,7 @@
 (ns pour.client
+  (:require
+   [clojure.java.io :as io]
+   [pour.torrent :as torrent])
   (:import
    [bt Bt]
    [bt.data.file FileSystemStorage]))
@@ -14,24 +17,35 @@
    ::pieces-remaining (.getPiecesRemaining session-state)
    ::pieces-total (.getPiecesTotal session-state)})
 
-(defn- build-client
-  [builder {::keys [magnet dir]}]
-  (let [path (java.nio.file.Paths/get (java.net.URI. (str "file://" dir)))]
-    (.. builder
-        (storage (FileSystemStorage. path))
-        (magnet magnet)
-        build)))
+(defn- build-torrent-client
+  [builder torrent storage _]
+  (.. builder
+      (storage (FileSystemStorage. (.toPath (io/as-file storage))))
+      (torrent (.. (io/as-file torrent) toURI toURL))
+      build))
+
+(defn- build-magnet-torrent-client
+  [builder magnet storage _]
+  (.. builder
+      (storage (FileSystemStorage. (.toPath (io/as-file storage))))
+      (magnet magnet)
+      build))
 
 (def ^:private bt-client :BtClient)
 (def ^:private callback-set :callback-set)
 
-(defn new-client
-  ([opts]
-   {bt-client (build-client (Bt/client) opts)
-    callback-set (atom (into #{} (get opts ::callbacks)))})
-  ([runtime opts]
-   {bt-client (build-client (Bt/client runtime) opts)
-    callback-set (atom (into #{} (get opts ::callbacks)))}))
+(defn- pushback-input-stream [x]
+  (java.io.PushbackInputStream. (io/input-stream x)))
+
+(defn new-torrent
+  [torrent storage opts]
+  {bt-client (build-torrent-client (Bt/client) torrent storage opts)
+   callback-set (atom (into #{} (get opts ::callbacks)))})
+
+(defn new-magnet-torrent
+  [magnet storage opts]
+  {bt-client (build-magnet-torrent-client (Bt/client) magnet storage opts)
+   callback-set (atom (into #{} (get opts ::callbacks)))})
 
 (defn start!
   [client]
@@ -65,19 +79,3 @@
 (defn remove-callback!
   [client callback]
   (update client callback-set swap! disj callback))
-
-(comment
-
-  (do
-    (def opts {::dir "/home/hy/projects/pour/data"
-               ::magnet "magnet:?xt=urn:btih:cf3b8d5ecdd4284eb9b3a80fcfe9b1d621548f72&tr=http%3A%2F%2Facademictorrents.com%2Fannounce.php&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969"
-               ::callbacks (fn [state]
-                             (clojure.pprint/pprint state))})
-    
-    (def client (new-client opts)))
-
-  (start! client)
-
-  (stop! client)
-  
-  )
