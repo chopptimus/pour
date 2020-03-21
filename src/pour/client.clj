@@ -34,9 +34,6 @@
 (def ^:private bt-client :BtClient)
 (def ^:private callback-set :callback-set)
 
-(defn- pushback-input-stream [x]
-  (java.io.PushbackInputStream. (io/input-stream x)))
-
 (defn new-torrent
   [torrent storage opts]
   {bt-client (build-torrent-client (Bt/client) torrent storage opts)
