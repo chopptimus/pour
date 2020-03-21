@@ -1,7 +1,6 @@
 (ns pour.client
   (:require
-   [clojure.java.io :as io]
-   [pour.torrent :as torrent])
+   [clojure.java.io :as io])
   (:import
    [bt Bt]
    [bt.data.file FileSystemStorage]))
