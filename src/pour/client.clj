@@ -35,13 +35,11 @@
 
 (defn new-torrent
   [torrent storage opts]
-  {bt-client (build-torrent-client (Bt/client) torrent storage opts)
-   callback-set (atom (into #{} (get opts ::callbacks)))})
-
-(defn new-magnet-torrent
-  [magnet storage opts]
-  {bt-client (build-magnet-torrent-client (Bt/client) magnet storage opts)
-   callback-set (atom (into #{} (get opts ::callbacks)))})
+  (if (and (string? torrent) (= (subs torrent 0 7) "magnet:"))
+    {bt-client (build-magnet-torrent-client (Bt/client) torrent storage opts)
+     callback-set (atom (into #{} (get opts ::callbacks)))} 
+    {bt-client (build-torrent-client (Bt/client) torrent storage opts)
+     callback-set (atom (into #{} (get opts ::callbacks)))}))
 
 (defn start!
   [client]
